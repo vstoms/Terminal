@@ -25,7 +25,9 @@ class TerminalApp::Profile final
 {
 
 public:
+    Profile(const winrt::guid& guid);
     Profile();
+
     ~Profile();
 
     winrt::Microsoft::Terminal::Settings::TerminalSettings CreateTerminalSettings(const std::vector<::TerminalApp::ColorScheme>& schemes) const;
@@ -48,6 +50,7 @@ public:
 
     bool HasIcon() const noexcept;
     std::wstring_view GetIconPath() const noexcept;
+    void SetIconPath(std::wstring_view path) noexcept;
 
     bool GetCloseOnExit() const noexcept;
 
@@ -56,8 +59,10 @@ private:
     static std::wstring EvaluateStartingDirectory(const std::wstring& directory);
 
     static winrt::Microsoft::Terminal::Settings::ScrollbarState ParseScrollbarState(const std::wstring& scrollbarState);
+    static winrt::Windows::UI::Xaml::Media::Stretch ParseImageStretchMode(const std::wstring& imageStretchMode);
+    static std::wstring_view SerializeImageStretchMode(const winrt::Windows::UI::Xaml::Media::Stretch imageStretchMode);
     static winrt::Microsoft::Terminal::Settings::CursorStyle _ParseCursorShape(const std::wstring& cursorShapeString);
-    static std::wstring _SerializeCursorStyle(const winrt::Microsoft::Terminal::Settings::CursorStyle cursorShape);
+    static std::wstring_view _SerializeCursorStyle(const winrt::Microsoft::Terminal::Settings::CursorStyle cursorShape);
 
     GUID _guid;
     std::wstring _name;
@@ -80,6 +85,10 @@ private:
     int32_t _fontSize;
     double _acrylicTransparency;
     bool _useAcrylic;
+
+    std::optional<std::wstring> _backgroundImage;
+    std::optional<double> _backgroundImageOpacity;
+    std::optional<winrt::Windows::UI::Xaml::Media::Stretch> _backgroundImageStretchMode;
 
     std::optional<std::wstring> _scrollbarState;
     bool _closeOnExit;
